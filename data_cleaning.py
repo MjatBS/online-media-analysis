@@ -1,6 +1,7 @@
 import datetime
 import nltk
 import re
+from nltk.corpus import stopwords
 
 
 LANGUAGE = 'russian'
@@ -16,11 +17,12 @@ def clear_article(article):
 
 def delete_non_alpha_numeric_tokens(tokens):
     words_or_digits = re.compile("[\w\d]+")
-    return list(filter(words_or_digits.match, tokens))
+    return filter(words_or_digits.match, tokens)
 
 
 def delete_stop_words(tokens):
-    raise NotImplementedError()
+    russian_stop_words = stopwords.words(LANGUAGE)
+    return filter(lambda token: token not in russian_stop_words, tokens)
 
 
 def lemmatization(tokens):
@@ -35,4 +37,5 @@ def clear_sentence(sentence) -> list:
     sentence = sentence.lower() # needed only for start of sentences. Not for celebrities countries and so on
     tokens = nltk.word_tokenize(sentence, language=LANGUAGE)
     tokens = delete_non_alpha_numeric_tokens(tokens)
-    return tokens
+    tokens = delete_stop_words(tokens)
+    return list(tokens)
